@@ -709,10 +709,11 @@ mi_closener()
 #endif /* BROKEN_PTHREAD_SLEEP */
 
 int
-mi_listener(conn, dbg, smfi, timeout, backlog)
+mi_listener(conn, dbg, smfi, initpriv, timeout, backlog)
 	char *conn;
 	int dbg;
 	smfiDesc_ptr smfi;
+	void *initpriv;
 	time_t timeout;
 	int backlog;
 {
@@ -947,6 +948,7 @@ mi_listener(conn, dbg, smfi, timeout, backlog)
 			ctx->ctx_pflags |= SMFIP_NODATA;
 		if (smfi->xxfi_version <= 2 || smfi->xxfi_unknown == NULL)
 			ctx->ctx_pflags |= SMFIP_NOUNKNOWN;
+		smfi_setpriv(ctx, initpriv);
 
 #if _FFR_WORKERS_POOL
 # define LOG_CRT_FAIL	"%s: mi_start_session() failed: %d, %s"
